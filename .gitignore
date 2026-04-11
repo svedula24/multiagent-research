@@ -205,3 +205,19 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+CLAUDE.md
+
+# Project-specific
+.env.local
+*.env
+
+# LangSmith / LangChain local cache
+.langchain/
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/
+
+# macOS
+.DS_Store
+**/.DS_Store
