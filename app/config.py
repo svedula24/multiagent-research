@@ -38,8 +38,8 @@ class Settings(BaseSettings):
     )
 
     # Agent model configuration
-    worker_model: str = Field("gemini-2.0-flash", description="Gemini model for worker agents")
-    synthesis_model: str = Field("gemini-1.5-pro", description="Gemini model for synthesis/manager")
+    worker_model: str = Field("gemini-2.5-flash", description="Gemini model for worker agents")
+    synthesis_model: str = Field("gemini-2.5-flash", description="Gemini model for synthesis/manager")
     embedding_model: str = Field("text-embedding-3-small", description="OpenAI embedding model")
     embedding_dimensions: int = Field(1536, description="Embedding vector dimensions")
 
