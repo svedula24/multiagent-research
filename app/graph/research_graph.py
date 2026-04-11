@@ -174,7 +174,7 @@ async def run_synthesis(state: ResearchState) -> dict[str, Any]:
 
     logger.info("run_synthesis: run_id=%d rejection_count=%d", run_id, rejection_count)
 
-    draft = synthesize(
+    draft = await synthesize(
         run_id=run_id,
         query=state["query"],
         competitors=state["competitors"],

@@ -102,18 +102,16 @@ async def run(query: str) -> WorkerOutput:
 
 
 async def _fetch(query: str) -> WorkerOutput:
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
 
-    # Fetch last 3 months of sales reports
+    # DB queries are sync — run in thread pool
     rows = await loop.run_in_executor(None, lambda: run_query(_RECENT_MONTHS_SQL, (3,)))
     avg_rows = await loop.run_in_executor(None, lambda: run_query(_AVG_CHURN_SQL, ()))
 
     if not rows:
         raise ValueError("No sales data found in database")
 
-    # Compute confidence from the most recent row
     confidence = sales_confidence(rows[0])
-
     avg_churn = float(avg_rows[0]["avg_churn"]) if avg_rows and avg_rows[0]["avg_churn"] else None
 
     sales_data = {
@@ -133,7 +131,8 @@ async def _fetch(query: str) -> WorkerOutput:
         sales_data=json.dumps(sales_data, indent=2, default=str),
     )
 
-    response = await loop.run_in_executor(None, lambda: llm.invoke(prompt))
+    # Use ainvoke directly — Gemini SDK is async-native, run_in_executor causes issues
+    response = await llm.ainvoke(prompt)
     raw = response.content.strip()
     if raw.startswith("```"):
         raw = raw.split("```")[1]

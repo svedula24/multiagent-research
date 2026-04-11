@@ -82,18 +82,15 @@ async def run(query: str) -> WorkerOutput:
 async def _fetch(query: str) -> WorkerOutput:
     import json
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
 
-    # Embed query (sync → thread pool)
+    # Embed query and DB search are sync — run in thread pool
     embedding = await loop.run_in_executor(None, embed_text, query)
-
-    # Retrieve top-10 similar reviews (sync → thread pool)
     rows = await loop.run_in_executor(None, lambda: similarity_search(embedding, top_k=10))
 
     similarity_scores = [float(r["similarity"]) for r in rows]
     confidence = review_confidence(similarity_scores)
 
-    # Format reviews for the prompt
     review_text = "\n\n".join(
         f"[Review {i+1}] Rating: {r['rating']}/5 | Category: {r['category']}\n{r['content']}"
         for i, r in enumerate(rows)
@@ -106,8 +103,9 @@ async def _fetch(query: str) -> WorkerOutput:
         temperature=0.2,
     )
 
+    # Use ainvoke directly — Gemini SDK is async-native, run_in_executor causes issues
     prompt = _REVIEW_PROMPT.format(query=query, reviews=review_text)
-    response = await loop.run_in_executor(None, lambda: llm.invoke(prompt))
+    response = await llm.ainvoke(prompt)
 
     raw = response.content.strip()
     if raw.startswith("```"):

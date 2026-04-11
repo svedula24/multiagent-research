@@ -70,7 +70,7 @@ def _format_findings(output: WorkerOutput) -> str:
     return json.dumps(output.findings, indent=2)
 
 
-def synthesize(
+async def synthesize(
     run_id: int,
     query: str,
     competitors: list[str],
@@ -109,7 +109,7 @@ def synthesize(
     logger.info("Running synthesis for run_id=%d (rejection_count=%d)", run_id, rejection_count)
 
     try:
-        response = llm.invoke(prompt)
+        response = await llm.ainvoke(prompt)
         raw = response.content.strip()
 
         # Strip markdown code fences if Gemini wraps the JSON
