@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS worker_outputs (
 
 CREATE TABLE IF NOT EXISTS draft_recommendations (
     id              SERIAL PRIMARY KEY,
-    run_id          INTEGER REFERENCES research_runs(id) ON DELETE CASCADE,
+    run_id          INTEGER REFERENCES research_runs(id) ON DELETE CASCADE UNIQUE,
     summary         TEXT NOT NULL,
     findings_by_source JSONB,
     confidence      DECIMAL(4,3),
