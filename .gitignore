@@ -207,6 +207,9 @@ marimo/_lsp/
 __marimo__/
 CLAUDE.md
 
+# Virtual environment
+multiagent-research/
+
 # Project-specific
 .env.local
 *.env
