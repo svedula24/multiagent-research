@@ -1,0 +1,40 @@
+# Core agent framework
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-google-genai>=2.0.0
+langchain-community>=0.3.0
+langchain-openai>=0.2.0
+
+# LLM / AI APIs
+google-generativeai>=0.8.0
+openai>=1.50.0
+tavily-python>=0.5.0
+
+# Web framework
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+slowapi>=0.1.9
+
+# Frontend
+streamlit>=1.40.0
+
+# Database
+psycopg2-binary>=2.9.10
+
+# Validation & config
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+python-dotenv>=1.0.1
+
+# Observability
+langsmith>=0.1.140
+
+# Evals
+ragas>=0.2.0
+datasets>=3.0.0
+
+# Testing & linting
+pytest>=8.3.0
+pytest-asyncio>=0.24.0
+pytest-mock>=3.14.0
+ruff>=0.8.0
