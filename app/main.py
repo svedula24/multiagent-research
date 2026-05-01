@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -33,9 +34,21 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
 # Lifespan — DB pool init/teardown
 # ---------------------------------------------------------------------------
 
+def _configure_langsmith(settings) -> None:
+    if not settings.langsmith_api_key:
+        logger.info("LangSmith disabled — no LANGSMITH_API_KEY set")
+        return
+    os.environ["LANGCHAIN_TRACING_V2"] = "true"
+    os.environ["LANGCHAIN_API_KEY"] = settings.langsmith_api_key
+    os.environ["LANGCHAIN_PROJECT"] = settings.langsmith_project
+    os.environ["LANGCHAIN_ENDPOINT"] = settings.langchain_endpoint
+    logger.info("LangSmith tracing enabled — project=%s", settings.langsmith_project)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
+    _configure_langsmith(settings)
     init_pool(settings.database_url, minconn=2, maxconn=10)
     logger.info("Application startup complete")
     yield
