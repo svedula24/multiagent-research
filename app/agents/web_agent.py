@@ -70,7 +70,5 @@ async def _fetch(competitors: list[str]) -> list[dict]:
         results = await asyncio.get_event_loop().run_in_executor(
             None, lambda q=query: search(q, max_results=5)
         )
-        for r in results:
-            r["competitor"] = competitor
-        all_results.extend(results)
+        all_results.extend({**r, "competitor": competitor} for r in results)
     return all_results
